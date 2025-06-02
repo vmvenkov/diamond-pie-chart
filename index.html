@@ -24,21 +24,28 @@
       box-sizing: border-box;
     }
 
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chart-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      margin: 0;
+    }
+
     #datasetSelector {
-      padding: 8px;
-      font-size: 1em;
+      padding: 6px 10px;
+      font-size: 0.95em;
       border-radius: 6px;
       border: 1px solid #444;
       background-color: #1e3a56;
       color: #f0f0f0;
-      margin-bottom: 12px;
-      width: 100%;
-    }
-
-    .chart-title {
-      font-size: 1.4em;
-      font-weight: 600;
-      margin: 0 0 10px 0;
+      margin-left: 10px;
     }
 
     #pieChart {
@@ -49,16 +56,17 @@
 </head>
 <body>
   <div class="pie-container">
-    <select id="datasetSelector">
-      <option value="Prod_CTS">Production (CTS)</option>
-      <option value="Prod_USD">Production (USD)</option>
-      <option value="Imp_CTS">Import (CTS)</option>
-      <option value="Imp_USD">Import (USD)</option>
-      <option value="Exp_CTS">Export (CTS)</option>
-      <option value="Exp_USD">Export (USD)</option>
-    </select>
-
-    <div class="chart-title" id="chartTitle">Top 5 countries in Production (CTS)</div>
+    <div class="header">
+      <div class="chart-title" id="chartTitle">Top 5 countries in Production (CTS)</div>
+      <select id="datasetSelector">
+        <option value="Prod_CTS">Production (CTS)</option>
+        <option value="Prod_USD">Production (USD)</option>
+        <option value="Imp_CTS">Import (CTS)</option>
+        <option value="Imp_USD">Import (USD)</option>
+        <option value="Exp_CTS">Export (CTS)</option>
+        <option value="Exp_USD">Export (USD)</option>
+      </select>
+    </div>
 
     <div id="pieChart"></div>
   </div>
@@ -159,7 +167,7 @@
         showlegend: true,
         legend: {
           orientation: 'h',
-          y: -0.2,  // по-близо до диаграмата
+          y: -0.2,
           x: 0.5,
           xanchor: 'center'
         },
@@ -168,7 +176,6 @@
 
       Plotly.newPlot('pieChart', data, layout, { responsive: true });
 
-      // Обновяване на заглавието
       title.textContent = `Top 5 countries in ${optionLabels[selected]}`;
     }
 
