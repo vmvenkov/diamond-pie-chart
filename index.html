@@ -144,9 +144,21 @@
       const selected = selector.value;
       const dataset = dataSets[selected];
       const entries = Object.entries(dataset).sort((a, b) => b[1] - a[1]);
-      const top5 = entries.slice(0, 5);
-      const others = entries.slice(5).reduce((sum, [, val]) => sum + val, 0);
-      if (others > 0) top5.push(["Others", others]);
+
+      let topEntries = entries.slice(0, 5);
+      let otherEntries = entries.slice(5);
+      
+      // Проверка дали "Others" вече е сред първите
+      const hasExplicitOthers = topEntries.some(([label]) => label === "Others");
+      
+      if (!hasExplicitOthers && otherEntries.length > 0) {
+        const othersValue = otherEntries.reduce((sum, [, val]) => sum + val, 0);
+        topEntries.push(["Others", othersValue]);
+      }
+      
+      const labels = topEntries.map(entry => entry[0]);
+      const values = topEntries.map(entry => entry[1]);
+
 
       const labels = top5.map(entry => entry[0]);
       const values = top5.map(entry => entry[1]);
