@@ -19,9 +19,8 @@
     .pie-container {
       width: 100%;
       max-width: 600px;
-      height: 100%;
-      box-sizing: border-box;
       padding: 20px;
+      box-sizing: border-box;
     }
 
     #pieChart {
@@ -54,6 +53,15 @@
   </div>
 
   <script>
+    const palette = [
+      '#4cc9f0', // светло синьо
+      '#4361ee', // индиго
+      '#3a0ca3', // тъмно лилаво
+      '#7209b7', // виолетово
+      '#f72585', // магента
+      '#4895ef'  // синьо-сиво
+    ];
+
     const dataSets = {
       Prod_CTS: {
         labels: ['Russia', 'Botswana', 'Angola', 'Canada', 'Congo, Dem Rep of the', 'Others'],
@@ -91,6 +99,7 @@
         textinfo: 'label+percent',
         insidetextorientation: 'radial',
         marker: {
+          colors: palette,
           line: {
             color: '#142940',
             width: 2
