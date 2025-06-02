@@ -14,6 +14,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
     }
 
     .pie-container {
@@ -23,13 +25,15 @@
       box-sizing: border-box;
     }
 
-    #pieChart {
-      width: 100%;
-      height: 100%;
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.2em;
     }
 
-    select {
-      margin-top: 20px;
+    #datasetSelector {
+      display: block;
+      margin: 0 auto 20px auto;
       padding: 6px 12px;
       border-radius: 6px;
       border: 1px solid #555;
@@ -37,11 +41,16 @@
       color: #f0f0f0;
       font-size: 1em;
     }
+
+    #pieChart {
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
 <body>
   <div class="pie-container">
-    <div id="pieChart"></div>
+    <h2 id="chartTitle">Top 5 countries in Production (CTS)</h2>
     <select id="datasetSelector">
       <option value="Prod_CTS">Production (CTS)</option>
       <option value="Prod_USD">Production (USD)</option>
@@ -50,17 +59,11 @@
       <option value="Exp_CTS">Export (CTS)</option>
       <option value="Exp_USD">Export (USD)</option>
     </select>
+    <div id="pieChart"></div>
   </div>
 
   <script>
-    const palette = [
-      '#4cc9f0', // светло синьо
-      '#4361ee', // индиго
-      '#3a0ca3', // тъмно лилаво
-      '#7209b7', // виолетово
-      '#f72585', // магента
-      '#4895ef'  // синьо-сиво
-    ];
+    const palette = ['#4cc9f0', '#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4895ef'];
 
     const dataSets = {
       Prod_CTS: {
@@ -90,7 +93,16 @@
     };
 
     function renderPieChart(datasetKey) {
-      const { labels, values } = dataSets[datasetKey];
+      const raw = dataSets[datasetKey];
+      const zipped = raw.labels.map((label, i) => ({ label, value: raw.values[i] }));
+      zipped.sort((a, b) => b.value - a.value);
+
+      const top5 = zipped.slice(0, 5);
+      const othersSum = zipped.slice(5).reduce((sum, d) => sum + d.value, 0);
+      if (othersSum > 0) top5.push({ label: 'Others', value: othersSum });
+
+      const labels = top5.map(d => d.label);
+      const values = top5.map(d => d.value);
 
       const data = [{
         type: 'pie',
@@ -99,23 +111,20 @@
         textinfo: 'label+percent',
         insidetextorientation: 'radial',
         marker: {
-          colors: palette,
-          line: {
-            color: '#142940',
-            width: 2
-          }
+          colors: palette.slice(0, labels.length),
+          line: { color: '#142940', width: 2 }
         }
       }];
 
       const layout = {
         paper_bgcolor: '#142940',
         plot_bgcolor: '#142940',
-        font: {
-          color: '#f0f0f0'
-        },
-        margin: { t: 40, b: 40, l: 10, r: 10 },
-        height: 400
+        font: { color: '#f0f0f0' },
+        margin: { t: 20, b: 20, l: 10, r: 10 },
+        height: 300
       };
+
+      document.getElementById('chartTitle').textContent = 'Top 5 countries in ' + datasetKey.replace('_', ' ');
 
       Plotly.newPlot('pieChart', data, layout, { responsive: true });
     }
