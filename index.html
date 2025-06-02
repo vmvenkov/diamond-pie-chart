@@ -50,7 +50,8 @@
 
     #pieChart {
       width: 100%;
-      height: 300px;
+      height: auto;
+      overflow: visible;
     }
   </style>
 </head>
@@ -166,12 +167,16 @@
         font: { color: '#f0f0f0' },
         showlegend: true,
         legend: {
-          orientation: 'h',
-          y: -0.2,
-          x: 0.5,
-          xanchor: 'center'
+          orientation: 'v',
+          x: 1.1,
+          y: 0.5,
+          font: {
+            size: 12
+          }
         },
-        margin: { t: 30, b: 30, l: 20, r: 20 }
+        margin: { t: 30, b: 30, l: 20, r: 100 },
+        width: 600,
+        height: 400
       };
 
       Plotly.newPlot('pieChart', data, layout, { responsive: true });
