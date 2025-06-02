@@ -50,7 +50,7 @@
 
     #pieChart {
       width: 100%;
-      height: 320px;
+      height: 350px;
     }
   </style>
 </head>
@@ -142,20 +142,9 @@
     function updateChart() {
       const selected = selector.value;
       const dataset = dataSets[selected];
-      const entries = Object.entries(dataset).sort((a, b) => b[1] - a[1]);
 
-      let topEntries = entries.slice(0, 5);
-      let otherEntries = entries.slice(5);
-
-      const hasExplicitOthers = topEntries.some(([label]) => label === "Others");
-
-      if (!hasExplicitOthers && otherEntries.length > 0) {
-        const othersValue = otherEntries.reduce((sum, [, val]) => sum + val, 0);
-        topEntries.push(["Others", othersValue]);
-      }
-
-      const labels = topEntries.map(entry => entry[0]);
-      const values = topEntries.map(entry => entry[1]);
+      const labels = Object.keys(dataset);
+      const values = Object.values(dataset);
 
       const data = [{
         type: 'pie',
@@ -177,10 +166,9 @@
           x: 1,
           y: 0.5,
           xanchor: 'left',
-          yanchor: 'middle',
-          font: { size: 12 }
+          yanchor: 'middle'
         },
-        margin: { t: 20, b: 20, l: 0, r: 120 }
+        margin: { t: 20, b: 20, l: 20, r: 120 }
       };
 
       Plotly.newPlot('pieChart', data, layout, { responsive: true });
