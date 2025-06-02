@@ -1,53 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pie Chart</title>
+  <meta charset="UTF-8">
+  <title>Pie Chart Dashboard</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #142940;
       font-family: 'Segoe UI', sans-serif;
+      background-color: #142940;
       color: #f0f0f0;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
     }
 
     .pie-container {
+      max-width: 800px;
       width: 100%;
-      max-width: 600px;
       padding: 20px;
       box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     #datasetSelector {
-      margin-bottom: 10px;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid #555;
-      background-color: #1f3a4d;
-      color: #f0f0f0;
+      padding: 8px;
       font-size: 1em;
-    }
-
-    #pieChart {
+      border-radius: 6px;
+      border: 1px solid #444;
+      background-color: #1e3a56;
+      color: #f0f0f0;
+      margin-bottom: 12px;
       width: 100%;
     }
 
     .chart-title {
-      margin-top: -10px;
-      margin-bottom: 10px;
-      font-size: 1.1em;
-      font-weight: 500;
-      text-align: center;
+      font-size: 1.4em;
+      font-weight: 600;
+      margin: 0 0 10px 0;
+    }
+
+    #pieChart {
+      width: 100%;
+      height: 400px;
     }
   </style>
 </head>
@@ -62,61 +58,97 @@
       <option value="Exp_USD">Export (USD)</option>
     </select>
 
-    <div id="pieChart"></div>
     <div class="chart-title" id="chartTitle">Top 5 countries in Production (CTS)</div>
+
+    <div id="pieChart"></div>
   </div>
 
   <script>
-    const palette = ['#4cc9f0', '#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4895ef'];
-
     const dataSets = {
       Prod_CTS: {
-        labels: ['Russia', 'Botswana', 'Angola', 'Canada', 'Congo, Dem Rep of the', 'Others'],
-        values: [37322793.87, 28181710, 14027002.73, 13321628, 9788201.86, 15318372.20]
+        Russia: 37322793.87,
+        Botswana: 28181710,
+        Angola: 14027002.73,
+        Canada: 13321628,
+        "Congo, Dem Rep of the": 9788201.86,
+        Others: 15318372.20
       },
       Prod_USD: {
-        labels: ['Russia', 'Botswana', 'Angola', 'Canada', 'Namibia', 'Others'],
-        values: [3335490164.66, 3308086421.89, 1412182462.11, 1075005840.22, 966944622.83, 1384373398.36]
+        Russia: 3335490164.66,
+        Botswana: 3308086421.89,
+        Angola: 1412182462.11,
+        Canada: 1075005840.22,
+        Namibia: 966944622.83,
+        Others: 1384373398.36
       },
       Imp_CTS: {
-        labels: ['India', 'United Arab Emirates', 'China', 'Armenia', 'Botswana', 'Others'],
-        values: [114112209.78, 83073718.55, 19180609.78, 9378103.99, 6343978.75, 55332454.2]
+        India: 114112209.78,
+        "United Arab Emirates": 83073718.55,
+        China: 19180609.78,
+        Armenia: 9378103.99,
+        Botswana: 6343978.75,
+        Others: 55332454.2
       },
       Imp_USD: {
-        labels: ['India', 'United Arab Emirates', 'Armenia', 'China', 'Botswana', 'Others'],
-        values: [12177896440.5, 7282739584.66, 2073007937.09, 1466904400.04, 964645910.45, 6824689874.49]
+        India: 12177896440.5,
+        "United Arab Emirates": 7282739584.66,
+        Armenia: 2073007937.09,
+        China: 1466904400.04,
+        Botswana: 964645910.45,
+        Others: 6824689874.49
       },
       Exp_CTS: {
-        labels: ['United Arab Emirates', 'Russia', 'India', 'Botswana', 'China', 'Others'],
-        values: [85682342.59, 30371359.82, 22789356.81, 20342706.06, 17380053.61, 108336222]
+        "United Arab Emirates": 85682342.59,
+        Russia: 30371359.82,
+        India: 22789356.81,
+        Botswana: 20342706.06,
+        China: 17380053.61,
+        Others: 108336222
       },
       Exp_USD: {
-        labels: ['United Arab Emirates', 'Botswana', 'Russia', 'South Africa', 'China', 'Others'],
-        values: [9832001244.83, 2813405410.59, 2622759701.28, 1578054484.59, 1567376745.88, 11595309911.99]
+        "United Arab Emirates": 9832001244.83,
+        Botswana: 2813405410.59,
+        Russia: 2622759701.28,
+        "South Africa": 1578054484.59,
+        China: 1567376745.88,
+        Others: 11595309911.99
       }
     };
 
-    function renderPieChart(datasetKey) {
-      const raw = dataSets[datasetKey];
-      const zipped = raw.labels.map((label, i) => ({ label, value: raw.values[i] }));
-      zipped.sort((a, b) => b.value - a.value);
+    const optionLabels = {
+      Prod_CTS: 'Production (CTS)',
+      Prod_USD: 'Production (USD)',
+      Imp_CTS: 'Import (CTS)',
+      Imp_USD: 'Import (USD)',
+      Exp_CTS: 'Export (CTS)',
+      Exp_USD: 'Export (USD)'
+    };
 
-      const top5 = zipped.slice(0, 5);
-      const othersSum = zipped.slice(5).reduce((sum, d) => sum + d.value, 0);
-      if (othersSum > 0) top5.push({ label: 'Others', value: othersSum });
+    const colorPalette = [
+      '#2b7cff', '#6c5ce7', '#00cec9', '#fd79a8', '#e17055', '#636e72'
+    ];
 
-      const labels = top5.map(d => d.label);
-      const values = top5.map(d => d.value);
+    const selector = document.getElementById("datasetSelector");
+    const title = document.getElementById("chartTitle");
+
+    function updateChart() {
+      const selected = selector.value;
+      const dataset = dataSets[selected];
+      const entries = Object.entries(dataset).sort((a, b) => b[1] - a[1]);
+      const top5 = entries.slice(0, 5);
+      const others = entries.slice(5).reduce((sum, [, val]) => sum + val, 0);
+      if (others > 0) top5.push(["Others", others]);
+
+      const labels = top5.map(entry => entry[0]);
+      const values = top5.map(entry => entry[1]);
 
       const data = [{
         type: 'pie',
         labels: labels,
         values: values,
         textinfo: 'label+percent',
-        insidetextorientation: 'radial',
         marker: {
-          colors: palette.slice(0, labels.length),
-          line: { color: '#142940', width: 2 }
+          colors: colorPalette
         }
       }];
 
@@ -124,24 +156,24 @@
         paper_bgcolor: '#142940',
         plot_bgcolor: '#142940',
         font: { color: '#f0f0f0' },
-        height: 280,
-        margin: { t: 10, b: 60, l: 10, r: 10 },
+        showlegend: true,
         legend: {
           orientation: 'h',
-          y: -0.2
-        }
+          y: -0.2,  // по-близо до диаграмата
+          x: 0.5,
+          xanchor: 'center'
+        },
+        margin: { t: 30, b: 30, l: 20, r: 20 }
       };
 
-      document.getElementById('chartTitle').textContent = 'Top 5 countries in ' + datasetKey.replace('_', ' ');
-
       Plotly.newPlot('pieChart', data, layout, { responsive: true });
+
+      // Обновяване на заглавието
+      title.textContent = `Top 5 countries in ${optionLabels[selected]}`;
     }
 
-    document.getElementById('datasetSelector').addEventListener('change', (e) => {
-      renderPieChart(e.target.value);
-    });
-
-    renderPieChart('Prod_CTS');
+    selector.addEventListener('change', updateChart);
+    updateChart();
   </script>
 </body>
 </html>
